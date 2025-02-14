@@ -120,3 +120,17 @@ test('Purchase with login', async ({ page }) => {
     await expect(page.getByText('0.008')).toBeVisible();
 });
 
+test('Register and logout', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
+    await page.getByRole('link', { name: 'Register' }).click();
+    await page.getByRole('textbox', { name: 'Full name' }).click();
+    await page.getByRole('textbox', { name: 'Full name' }).fill('Test1');
+    await page.getByRole('textbox', { name: 'Email address' }).click();
+    await page.getByRole('textbox', { name: 'Email address' }).fill('test@email.com');
+    await page.getByRole('textbox', { name: 'Password' }).click();
+    await page.getByRole('textbox', { name: 'Password' }).fill('test');
+    await page.getByRole('button', { name: 'Register' }).click();
+    await expect(page.getByText('The web\'s best pizza', { exact: true })).toBeVisible();
+    await page.getByRole('link', { name: 'Logout' }).click();
+    await expect(page.getByRole('link', { name: 'Register' })).toBeVisible();
+});
