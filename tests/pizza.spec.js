@@ -141,6 +141,7 @@ test('Purchase with login', async ({ page }) => {
 });
 
 test('Register and logout', async ({ page }) => {
+    // Login/Logout/Register user route
     await page.route('*/**/api/auth', async (route) => {
         const loginReq = { email: 'd@jwt.com', password: 'a' };
         const loginRes = { user: { id: 1, name: 'NAME', email: 'email@jwt.com', roles: [{ role: 'diner' }] }, token: 'abcdef' };
@@ -153,7 +154,7 @@ test('Register and logout', async ({ page }) => {
         } else if (route.request().method() === 'DELETE') {
             await route.fulfill({ json: logoutRes });
         }
-      });
+    });
 
     await page.goto('http://localhost:5173/');
     await page.getByRole('link', { name: 'Register' }).click();
@@ -164,7 +165,91 @@ test('Register and logout', async ({ page }) => {
     await page.getByRole('textbox', { name: 'Password' }).click();
     await page.getByRole('textbox', { name: 'Password' }).fill('test');
     await page.getByRole('button', { name: 'Register' }).click();
+
+    await page.getByRole('link', { name: 'N', exact: true }).click();
+
     await page.getByRole('link', { name: 'Logout' }).click();
     await expect(page.getByRole('link', { name: 'Register' })).toBeVisible();
 });
 
+test('Login Admin, create/delete franchise', async ({ page }) => {
+    // Login/Logout/Register admin route
+    await page.route('*/**/api/auth', async (route) => {
+        const loginReq = { email: 'd@jwt.com', password: 'a' };
+        const loginRes = { user: { id: 1, name: 'NAME', email: 'email@jwt.com', roles: [{ role: 'admin' }] }, token: 'abcdef' };
+        const logoutRes = { message: 'logout successful' }
+
+        if (route.request().method() === 'PUT') {
+            await route.fulfill({ json: loginRes });
+        } else if (route.request().method() === 'POST') {
+            await route.fulfill({ json: loginRes });
+        } else if (route.request().method() === 'DELETE') {
+            await route.fulfill({ json: logoutRes });
+        }
+    });
+    // Create franchise route
+    await page.route('*/**/api/franchise', async (route) => {
+        const franchiseRes = {
+            name: "testFranchise",
+            admins: [
+              {
+                email: "f@jwt.com",
+                id: 4,
+                name: "pizza franchisee"
+              }
+            ],
+            "id": 1
+          };
+        if(route.request().method() === 'POST') {
+            await route.fulfill({ json: franchiseRes });
+        }
+    });
+
+    // Get franchises route
+    await page.route('*/**/api/franchise', async (route) => {
+        const franchiseRes = [
+          {
+            id: 1,
+            name: 'testFranchise',
+            stores: [
+              { id: 2, name: 'Test Location' },
+            ],
+          },
+        ];
+        if(route.request().method() === 'GET') {
+            await route.fulfill({ json: franchiseRes });
+        }
+    });
+
+    // Delete franchises route
+    await page.route('*/**/api/franchise/2', async (route) => {
+        const deleteRes = { message: 'franchise deleted' }
+        if (route.request().method() === 'DELETE') {
+            await route.fulfill({ json: deleteRes });
+        }
+        
+    });
+
+    await page.goto('http://localhost:5173/');
+    await page.getByRole('link', { name: 'Login' }).click();
+    await page.getByRole('textbox', { name: 'Email address' }).click();
+    await page.getByRole('textbox', { name: 'Email address' }).fill('d@jwt.com');
+    await page.getByRole('textbox', { name: 'Password' }).click();
+    await page.getByRole('textbox', { name: 'Password' }).fill('a');
+    await page.getByRole('button', { name: 'Login' }).click();
+
+    await page.getByRole('link', { name: 'Admin' }).click();
+    await page.getByRole('button', { name: 'Add Franchise' }).click();
+    await page.getByRole('textbox', { name: 'franchise name' }).click();
+    await page.getByRole('textbox', { name: 'franchise name' }).fill('testFranchise');
+    await page.getByRole('textbox', { name: 'franchisee admin email' }).click();
+    await page.getByRole('textbox', { name: 'franchisee admin email' }).fill('testFranchise@email.com');
+    await page.getByRole('button', { name: 'Create' }).click();
+
+    
+
+    await page.getByRole('button', { name: 'Cancel' }).click();
+    await page.getByRole('row', { name: 'testFranchise Close' }).getByRole('button').click();
+    await page.getByRole('button', { name: 'Close' }).click();
+   
+});
