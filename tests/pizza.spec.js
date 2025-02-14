@@ -1,12 +1,33 @@
 import { test, expect } from 'playwright-test-coverage';
 
-test('home page', async ({ page }) => {
+test('Home page', async ({ page }) => {
   await page.goto('/');
 
   expect(await page.title()).toBe('JWT Pizza');
 });
 
-test('purchase with login', async ({ page }) => {
+test('About page', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('link', { name: 'About' }).click();
+  
+    await expect(page.getByRole('main')).toContainText('The secret sauce');
+});
+
+test('Franchise page', async ({ page }) => {
+    await page.goto('/');
+    await page.getByLabel('Global').getByRole('link', { name: 'Franchise' }).click();
+  
+    await expect(page.getByText('So you want a piece of the')).toBeVisible();
+});
+
+test('Register page', async ({ page }) => {
+    await page.goto('/');
+    await page.getByLabel('Global').getByRole('link', { name: 'Register' }).click();
+  
+    await expect(page.getByText('Welcome to the party')).toBeVisible();
+});
+
+test('Purchase with login', async ({ page }) => {
     await page.route('*/**/api/order/menu', async (route) => {
       const menuRes = [
         { id: 1, title: 'Veggie', image: 'pizza1.png', price: 0.0038, description: 'A garden of delight' },
@@ -97,5 +118,5 @@ test('purchase with login', async ({ page }) => {
   
     // Check balance
     await expect(page.getByText('0.008')).toBeVisible();
-
 });
+
