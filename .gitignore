@@ -5,6 +5,7 @@ config.js
 coverage
 dist
 **/.vite
+generatePizzaData.sh
 
 # Playwright
 node_modules/
