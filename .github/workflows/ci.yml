@@ -23,12 +23,11 @@ jobs:
       - name: set version
         id: set_version
         run: |
-          version=$(date +'%Y%m%d.%H%M%S')
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          printf '{"version": "%s" }' "$version" > public/version.json
+          echo "version=$(date +'%Y%m%d.%H%M%S')" >> "$GITHUB_OUTPUT"
 
       - name: Build
         run: |
+          printf '{"version": "%s" }' ${{steps.set_version.outputs.version}} > public/version.json
           npm ci && npm run build
 
       - name: Update dist artifact
