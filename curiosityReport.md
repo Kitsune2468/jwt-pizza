@@ -9,3 +9,8 @@ For games that connect to servers, monitoring and logging tools are used similar
 ## Pipeline Automation
 I found it really interesting that pipelines are still used in videogame development! Looking at it now, it makes sense. It's also really interesting that pipelines are able to integrate systems like Unity and Unreal Engine similar to what we did during the course with AWS and Docker, and spin up containers that can test the games using the engines.
 
+## Scaling
+Just like we did in the scalable deployment deliverable, scaling is a vital aspect of online games. Servers need to be spun up and shut down as the playerbase changes. Many games also run into issues on launch days or major updates, as the large spike in players can overwhelm their available servers. 
+
+## Fun Fact
+Some developers create automated tests using enemy AI to control the player! 
