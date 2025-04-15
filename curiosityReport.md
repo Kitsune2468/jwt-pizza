@@ -6,4 +6,6 @@ Error logs and error codes for many games are very important, especially those t
 ## Monitoring/Logging
 For games that connect to servers, monitoring and logging tools are used similar to how we used Grafana for JWT Pizza. Things like latency and response time are incredibly important, and servers need to responed much faster than is neccessary for a website or other systems. (While this isn't neccessarily under monitoring/logging,) latency is used to provide better matchmaking and determining what servers the client should connect to. I'm sure this is the same as what AWS and other systems do as well.
 
+## Pipeline Automation
+I found it really interesting that pipelines are still used in videogame development! Looking at it now, it makes sense. It's also really interesting that pipelines are able to integrate systems like Unity and Unreal Engine similar to what we did during the course with AWS and Docker, and spin up containers that can test the games using the engines.
 
